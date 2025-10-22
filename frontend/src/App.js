@@ -1,14 +1,32 @@
-import React from "react";
-import PcosForm from "./components/PcosForm";
-import "./App.css";
+import React, { useState } from 'react';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import AboutSection from './components/Aboutsection';
+import AssessmentSection from './components/AssessmentSection';
+import LifestyleSection from './components/LifestyleSection';
+import ConsultationSection from './components/Consultationsection';
+import CommunitySection from './components/CommunitySection';
+import ContactSection from './components/ContactSection';
+import Homesection from './components/HomeSection';
 
-function App() {
+export default function App() {
+  const [activeSection, setActiveSection] = useState('home');
+
   return (
-    <div className="App">
-      <h1>🩺 PCOS Prediction System</h1>
-      <PcosForm />
-    </div>
+    <>
+      <Header activeSection={activeSection} setActiveSection={setActiveSection} />
+
+      <main style={{ minHeight: 'calc(100vh - 132px)' }}>
+        {activeSection === 'home' && <Homesection setActiveSection={setActiveSection} />}
+        {activeSection === 'about' && <AboutSection />}
+        {activeSection === 'assessment' && <AssessmentSection setActiveSection={setActiveSection} />}
+        {activeSection === 'lifestyle' && <LifestyleSection />}
+        {activeSection === 'consultation' && <ConsultationSection />}
+        {activeSection === 'community' && <CommunitySection />}
+        {activeSection === 'contact' && <ContactSection />}
+      </main>
+
+      <Footer />
+    </>
   );
 }
-
-export default App;

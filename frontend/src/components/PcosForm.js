@@ -6,35 +6,54 @@ const PcosForm = () => {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const fields = [
-    "Age (yrs)",
-    "Weight (Kg)",
-    "Height(Cm) ",
-    "BMI",
-    "Pulse rate(bpm) ",
-    "RR (breaths/min)",
-    "Hb(g/dl)",
-    "Cycle(R/I)",
-    "Cycle length(days)",
-    "Marraige Status (Yrs)",
-    "Pregnant(Y/N)",
-    "No. of abortions",
-    "Weight gain(Y/N)",
-    "hair growth(Y/N)",
-    "Skin darkening (Y/N)",
-    "Hair loss(Y/N)",
-    "Pimples(Y/N)",
-    "Fast food (Y/N)",
-    "Reg.Exercise(Y/N)"
-  ];
+  // Define all fields with their type
+ const fields = [
+  { name: " Age (yrs)", type: "number" },
+  { name: "Weight (Kg)", type: "number" },
+  { name: "Height(Cm) ", type: "number" },
+  { name: "BMI", type: "number" },
+  { name: "Pulse rate(bpm) ", type: "number" },
+  { name: "RR (breaths/min)", type: "number" },
+  { name: "Hb(g/dl)", type: "number" },
+  { name: "Cycle(R/I)", type: "cycle" },  
+  { name: "Cycle length(days)", type: "number" },
+  { name: "Marraige Status (Yrs)", type: "number" },
+  { name: "Pregnant(Y/N)", type: "yesno" },
+  { name: "No. of abortions", type: "number" },
+  { name: "Weight gain(Y/N)", type: "yesno" },
+  { name: "hair growth(Y/N)", type: "yesno" },
+  { name: "Skin darkening (Y/N)", type: "yesno" },
+  { name: "Hair loss(Y/N)", type: "yesno" },
+  { name: "Pimples(Y/N)", type: "yesno" },
+  { name: "Fast food (Y/N)", type: "yesno" },
+  { name: "Reg.Exercise(Y/N)", type: "yesno" }
+];
 
-  const handleChange = (e) => {
+
+  // Handle input changes
+  const handleChange = (e, type) => {
+    let value = e.target.value;
+
+    // Convert Yes/No to 1/0
+    if (type === "yesno") {
+      value = value.toLowerCase() === "yes" ? 1 : 0;
+    } 
+    // Convert Cycle Regular/Irregular to 1/0
+    else if (type === "cycle") {
+      value = value.toLowerCase() === "regular" ? 1 : 0;
+    } 
+    // Convert number input to float
+    else if (type === "number") {
+      value = parseFloat(value);
+    }
+
     setInputs({
       ...inputs,
-      [e.target.name]: e.target.value,
+      [e.target.name]: value
     });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -55,17 +74,41 @@ const PcosForm = () => {
       <form onSubmit={handleSubmit}>
         {fields.map((field, idx) => (
           <div key={idx} className="input-field">
-            <label>{field}</label>
-            <input
-              type="number"
-              step="any"
-              name={field}
-              placeholder="Enter value"
-              onChange={handleChange}
-              required
-            />
+            <label>{field.name}</label>
+
+            {field.type === "yesno" ? (
+              <select
+                name={field.name}
+                onChange={(e) => handleChange(e, "yesno")}
+                required
+              >
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            ) : field.type === "cycle" ? (
+              <select
+                name={field.name}
+                onChange={(e) => handleChange(e, "cycle")}
+                required
+              >
+                <option value="">Select</option>
+                <option value="Regular">Regular</option>
+                <option value="Irregular">Irregular</option>
+              </select>
+            ) : (
+              <input
+                type="number"
+                step="any"
+                name={field.name}
+                placeholder="Enter value"
+                onChange={(e) => handleChange(e, "number")}
+                required
+              />
+            )}
           </div>
         ))}
+
         <button type="submit" disabled={loading}>
           {loading ? "Predicting..." : "Predict PCOS"}
         </button>
