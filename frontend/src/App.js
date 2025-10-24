@@ -8,6 +8,10 @@ import ConsultationSection from './components/Consultationsection';
 import CommunitySection from './components/CommunitySection';
 import ContactSection from './components/ContactSection';
 import Homesection from './components/HomeSection';
+import 'aos/dist/aos.css';
+import AOS from 'aos';
+AOS.init();
+
 
 export default function App() {
   const [activeSection, setActiveSection] = useState('home');
