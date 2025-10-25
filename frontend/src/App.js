@@ -8,10 +8,10 @@ import ConsultationSection from './components/Consultationsection';
 import CommunitySection from './components/CommunitySection';
 import ContactSection from './components/ContactSection';
 import Homesection from './components/HomeSection';
+import ChatBot from './components/chatbot'; // Add this import
 import 'aos/dist/aos.css';
 import AOS from 'aos';
 AOS.init();
-
 
 export default function App() {
   const [activeSection, setActiveSection] = useState('home');
@@ -31,6 +31,9 @@ export default function App() {
       </main>
 
       <Footer />
+      
+      
+      <ChatBot />
     </>
   );
 }
