@@ -15,12 +15,13 @@ export default function Header({ activeSection, setActiveSection }) {
 
   return (
     <nav
-      className="navbar navbar-expand-lg navbar-light bg-white shadow-sm"
+      className="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top"
       style={{
         borderBottom: '2px solid #f3e7fa',
         minHeight: '60px',
+        zIndex: 1050  // ensures it's above all main content
       }}
-    >
+>
       <div className="container-fluid d-flex align-items-center justify-content-between">
         {/* Logo and Brand */}
         <div className="d-flex align-items-center gap-3">

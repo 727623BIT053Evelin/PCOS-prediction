@@ -1,0 +1,56 @@
+.hero-fade {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: heroFadeIn 1.1s forwards cubic-bezier(.77,0,.18,1);
+}
+@keyframes heroFadeIn {
+  to { opacity: 1; transform: none; }
+}
+.zoom-in {
+  animation: zoomin 0.92s;
+  opacity: 0.97;
+}
+@keyframes zoomin {
+  0% { opacity: 0; transform: scale(0.945);}
+  100% { opacity: 1; transform: none;}
+}
+.rise-in {
+  animation: riseIn 1.2s 0.2s both;
+  opacity: 0.95;
+}
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(40px);}
+  to { opacity: 1; transform: none;}
+}
+.gradient-light { background: linear-gradient(96deg,#f8e8ff 0,#ffeafa 100%);}
+.story-carousel::-webkit-scrollbar { height: 6px;}
+.story-carousel::-webkit-scrollbar-thumb { background: #e9d7fa; border-radius: 4px;}
+.animated-pcos-card { box-shadow: 0 2px 12px #cfb7f55c;}
+@keyframes floatAnim {
+  0% { transform: translateY(0);}
+  100% { transform: translateY(-8px);}
+}
+.fade-in { opacity:0; animation: fadeIn 1.6s 0.2s forwards;}
+@keyframes fadeIn { to { opacity: 1; } }
+.pcos-contact-card {
+  background: linear-gradient(115deg, #f3e7fa 0%, #ffe5ee 100%);
+  border-radius: 18px;
+  box-shadow: 0 6px 22px #f6e7ff2c;
+  padding: 2.2rem 1.8rem 1.1rem 1.8rem;
+  max-width: 420px;
+}
+.pcos-contact-link {
+  color: #a259e8;
+  font-weight: 600;
+  text-decoration: underline;
+  border: none;
+  background: none;
+  margin-left: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.pcos-contact-link:hover,
+.pcos-contact-link:focus {
+  color: #7e47c5;
+  text-decoration: underline;
+}

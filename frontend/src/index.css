@@ -5,6 +5,8 @@
 
 body {
   font-family: 'Poppins', sans-serif;
+  padding-top: 50px;  /* Adjust if your nav height changes */
+
 }
 
 .nav-link {

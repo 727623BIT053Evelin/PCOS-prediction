@@ -1,70 +1,61 @@
-import React from 'react';
+import React, { useState } from "react";
 
-// Pastel purple background style for section heading
-const pastelGradient = {
-  background: 'linear-gradient(135deg, #f3e7fa 0%, #ffe5ee 100%)'
-};
+export default function CommunitySection({ user, feed, onLike, onComment, onJoinGroup, onJoinClick }) {
+  const [activeCommentId, setActiveCommentId] = useState(null);
+  const [commentText, setCommentText] = useState('');
 
-const communityHighlights = [
-  {
-    title: 'Discussion Forums',
-    desc: 'Engage with other women, share your experiences and get advice.',
-    icon: '💬',
-    color: '#bb1d69',
-  },
-  {
-    title: 'Events & Webinars',
-    desc: 'Attend virtual events with experts and community members.',
-    icon: '🎥',
-    color: '#ae57e9',
-  },
-  {
-    title: 'Success Stories',
-    desc: 'Be inspired by stories from women who have managed PCOS effectively.',
-    icon: '🌟',
-    color: '#c56cd6',
-  },
-];
+  const joinedGroups = user?.joinedGroups || [];
 
-export default function CommunitySection() {
   return (
-    <div className="container py-5">
-      <div style={pastelGradient} className="rounded-4 p-5 shadow mb-5 text-center">
-        <h1 className="fw-bold mb-3" style={{ fontSize: '2rem', color: '#2a254d' }}>
-          Community & Support
-        </h1>
-        <p className="lead" style={{ color: '#42404b' }}>
-          Build connections, find emotional support, and share resources in our PCOS community.
-        </p>
-      </div>
-
-      <div className="row g-4">
-        {communityHighlights.map(({ title, desc, icon, color }, i) => (
-          <div key={i} className="col-md-4">
-            <div
-              className="rounded-4 p-4 h-100"
-              style={{
-                background: '#fff',
-                boxShadow: '0 2px 16px #ece5f8',
-                textAlign: 'center',
-              }}
-            >
-              <span
-                className="d-block mb-3"
-                style={{ fontSize: '3rem', color }}
-                aria-label={title}
-                role="img"
-              >
-                {icon}
-              </span>
-              <h2 className="h5 fw-bold mb-3" style={{ color: '#a259e8' }}>
-                {title}
-              </h2>
-              <p style={{ color: '#55505a' }}>{desc}</p>
+    <div style={{ backgroundColor: '#f3e7fa', minHeight: '100vh', padding: '20px' }}>
+      {user ? (
+        <>
+          {/* Show full community with posts, comment features, join group buttons, etc. */}
+          {feed.map(post => (
+            <div key={post.id} style={{ background: 'white', margin: '15px 0', padding: '10px', borderRadius: '8px' }}>
+              <h4>{post.user.name}</h4>
+              <p>{post.content}</p>
+              <button onClick={() => onLike(post.id)}>{post.likes} Likes</button>
+              <button onClick={() => setActiveCommentId(post.id)}>Comments ({post.comments.length})</button>
+              {activeCommentId === post.id && (
+                <div>
+                  {post.comments.map(c => (
+                    <div key={c.text} style={{ margin: '5px 0' }}>
+                      <strong>{c.name}</strong>: {c.text}
+                    </div>
+                  ))}
+                  <input
+                    type="text"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    placeholder="Write a comment..."
+                  />
+                  <button onClick={() => {
+                    onComment(post.id, commentText);
+                    setCommentText('');
+                    setActiveCommentId(null);
+                  }}>Post</button>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+          {/* Group join button */}
+          {joinedGroups.length > 0 && (
+            <div>
+              <h4>Your Groups</h4>
+              {joinedGroups.map(g => (
+                <p key={g}>Group ID: {g}</p>
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
+        // Guest view
+        <div style={{ textAlign: 'center' }}>
+          <p>Please log in to comment, join groups, or post.</p>
+          <button onClick={onJoinClick}>Login / Sign Up</button>
+        </div>
+      )}
     </div>
   );
 }
