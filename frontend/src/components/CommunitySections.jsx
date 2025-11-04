@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Carousel, Modal, Button, Form, Image, Alert } from "react-bootstrap";
+import GroupView from './GroupView'; 
 
 const pastelGradient = {
   background: "linear-gradient(135deg,#f3e7fa 0%,#ffe5ee 100%)",
@@ -295,6 +296,7 @@ export default function CommunitySections() {
   const [joinedGroups, setJoinedGroups] = useState(user.joinedGroups);
   const [requestSentGroups, setRequestSentGroups] = useState([]);
   const [likedPosts, setLikedPosts] = useState(new Set());
+  
 
   function toggleLike(postId) {
     setFeed((prevFeed) =>
@@ -530,17 +532,26 @@ export default function CommunitySections() {
                         {g.name}
                       </div>
                       <div className="small text-secondary mb-2">{g.desc}</div>
-                      <Button
+                    <Button
                         size="sm"
-                        variant={isJoined ? "outline-secondary" : isRequested ? "outline-warning" : "outline-primary"}
+                        variant={isJoined ? 'outline-secondary' : isRequested ? 'outline-warning' : 'outline-primary'}
                         style={{
-                          borderColor: isJoined ? "#ccc" : isRequested ? "#ffc107" : accentColor,
-                          color: isJoined ? "#555" : isRequested ? "#856404" : accentColor,
+                          borderColor: isJoined ? '#ccc' : isRequested ? '#ffc107' : accentColor,
+                          color: isJoined ? '#555' : isRequested ? '#856404' : accentColor,
                         }}
-                        onClick={() => toggleJoinGroup(g.id)}
+                        onClick={() => {
+                          if (isJoined) {
+                            setModalGroup(g);            // g is the current group object
+                            setShowGroupModal(true);     // show the modal
+                          } else if (!requestSentGroups.includes(g.id)) {
+                            setRequestSentGroups(prev => [...prev, g.id]);
+                            alert('Request sent to join the group.');
+                          }
+                        }}
                       >
-                        {isJoined ? "View Group" : isRequested ? "Request Sent" : "Join Group"}
+                        {isJoined ? 'View Group' : isRequested ? 'Request Sent' : 'Join Group'}
                       </Button>
+
                     </div>
                   </div>
                 );
@@ -726,10 +737,8 @@ export default function CommunitySections() {
         <Modal.Header closeButton>
           <Modal.Title>{modalGroup?.name || "Group"}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <p>{modalGroup?.desc || "Group details will be displayed here."}</p>
-          <hr />
-          <Alert variant="info">Request to join this group has been sent.</Alert>
+        <Modal.Body style={{ padding: 0 }}>
+          <GroupView group={modalGroup} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowGroupModal(false)}>
@@ -737,6 +746,7 @@ export default function CommunitySections() {
           </Button>
         </Modal.Footer>
       </Modal>
+
 
       {/* Post Image Modal */}
       <Modal show={modalPost !== null} onHide={() => setModalPost(null)} size="lg" centered dialogClassName="modal-half-screen">
@@ -830,3 +840,5 @@ export default function CommunitySections() {
     </div>
   );
 }
+
+

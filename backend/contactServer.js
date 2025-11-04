@@ -1,15 +1,18 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const fs = require('fs');
-const path = require('path');
-const communityAuthRoutes = require('./communityAuth'); 
+// contactServer.js
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-
-app.use('/community/auth', communityAuthRoutes);
 
 app.post('/api/contact', (req, res) => {
   try {
@@ -33,9 +36,6 @@ app.post('/api/contact', (req, res) => {
     res.status(500).json({ status: 'error', message: err.message });
   }
 });
-
-
-
 
 const PORT = 4000;
 app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));

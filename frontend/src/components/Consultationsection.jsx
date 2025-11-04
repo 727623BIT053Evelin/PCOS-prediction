@@ -66,7 +66,7 @@ const dummyDoctors = [
 export default function Consultationsection() {
   const [showDoctors, setShowDoctors] = useState(false);
   const [appointmentStates, setAppointmentStates] = useState({});
-  const [modal, setModal] = useState({ open: false, doctorIdx: null, email: '' });
+  const [modal, setModal] = useState({ open: false, doctorIdx: null, email: '', name: '' });
   const [lastBookedIdx, setLastBookedIdx] = useState(null); // New: track last booked doctor
 
   const handleSearch = (e) => {
@@ -76,18 +76,40 @@ export default function Consultationsection() {
   };
 
   const handleBookClick = (idx) => {
-    setModal({ open: true, doctorIdx: idx, email: '' });
+    setModal({ open: true, doctorIdx: idx, email: '', name: '' });
   };
 
-  const handleModalSubmit = (e) => {
+  const handleModalSubmit = async (e) => {
     e.preventDefault();
-    const { doctorIdx, email } = modal;
+    const { doctorIdx, email, name } = modal;
+
+    // Update local appointment state
     setAppointmentStates(prev => ({
       ...prev,
-      [doctorIdx]: { status: 'requested', email }
+      [doctorIdx]: { status: 'requested', email, name }
     }));
-    setModal({ open: false, doctorIdx: null, email: '' });
-    setLastBookedIdx(doctorIdx); // Show confirmation only for this doctor
+
+    setModal({ open: false, doctorIdx: null, email: '', name: '' });
+    setLastBookedIdx(doctorIdx);
+
+    // Send booking data to backend API
+    try {
+      const res = await fetch('http://localhost:40001/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          doctor: dummyDoctors[doctorIdx].name
+        })
+      });
+
+      if (!res.ok) {
+        console.error('Failed to send booking to backend');
+      }
+    } catch (error) {
+      console.error('Error sending booking:', error);
+    }
   };
 
   return (
@@ -170,7 +192,7 @@ export default function Consultationsection() {
                   {appt?.status === 'requested' && (
                     <button
                       className="btn btn-warning mt-3 mt-md-0 text-white"
-                      style={{ border: 'none', cursor:'default' }}
+                      style={{ border: 'none', cursor: 'default' }}
                       disabled
                     >
                       Requested
@@ -189,7 +211,7 @@ export default function Consultationsection() {
         </div>
       )}
 
-      {/* Modal for email entry */}
+      {/* Modal for name and email entry */}
       {modal.open && (
         <div
           style={{
@@ -201,7 +223,19 @@ export default function Consultationsection() {
         >
           <form className="bg-white p-4 rounded-3" style={{ minWidth: 320 }} onSubmit={handleModalSubmit}>
             <div className="mb-3">
-              <label htmlFor="emailInput" className="form-label">Enter your email to request booking</label>
+              <label htmlFor="nameInput" className="form-label">Your Name</label>
+              <input
+                id="nameInput"
+                className="form-control"
+                type="text"
+                required
+                value={modal.name}
+                onChange={e => setModal(m => ({ ...m, name: e.target.value }))}
+                placeholder="Enter your name"
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="emailInput" className="form-label">Your Email</label>
               <input
                 id="emailInput"
                 className="form-control"
@@ -213,7 +247,7 @@ export default function Consultationsection() {
               />
             </div>
             <button className="btn btn-primary me-2" type="submit">Submit</button>
-            <button className="btn btn-secondary" type="button" onClick={() => setModal({ open: false, doctorIdx: null, email: '' })}>Cancel</button>
+            <button className="btn btn-secondary" type="button" onClick={() => setModal({ open: false, doctorIdx: null, email: '', name: '' })}>Cancel</button>
           </form>
         </div>
       )}
